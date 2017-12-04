@@ -419,9 +419,17 @@ class kmap:
         if not hasattr(self, 'source'):
             self.make_map_source()
 
+        # Make color mapper
+        #from bokeh.palettes import Viridis6 as palette
+        #from bokeh.palettes import Spectral11 as palette
+        from bokeh.palettes import RdYlGn11 as palette
+        palette.reverse()
+        #color_mapper = bm.LogColorMapper(palette=palette, high=90., low=50.)
+        color_mapper = bm.LinearColorMapper(palette=palette, high=90., low=50.)
+
         # Plot
-        fig.patches(xs='x_lon', ys='y_lat', source=self.source, line_color="firebrick")
-          #fill_color={'field': 'rate', 'transform': color_mapper},
-          #fill_alpha=0.7, line_color="white", line_width=0.5)
+        fig.patches(xs='x_lon', ys='y_lat', source=self.source,
+            fill_color={'field': 'stemme_pct', 'transform': color_mapper},
+            fill_alpha=0.7, line_color="white", line_width=0.5)
 
         return fig
