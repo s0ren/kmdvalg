@@ -1,0 +1,22 @@
+name: kmdvalg
+channels:
+- defaults
+- conda-forge
+- damianavila82
+dependencies:
+- python>=3.5
+- numpy
+- matplotlib
+- bokeh
+- ipython
+- nbformat
+- jupyter
+- pandas
+- beautifulsoup4
+- notebook>=5.2
+- ipywidgets>=7.0
+- pyshp
+- python-dateutil
+- rise
+- pip:
+  - https://github.com/sklam/py2nb/archive/master.zip
