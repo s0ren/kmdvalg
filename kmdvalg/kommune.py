@@ -164,7 +164,87 @@ class kmap:
                 self.kdic = pickle.load(f)
         # Create it
         else:
-            self.make_map_Digdag_Kommunal()
+            # Create from history dataset
+            #self.make_map_Digdag_Kommunal()
+
+            # Create from thinnned dataset
+            self.make_map_DAGI_Kommunal()
+
+    def make_map_DAGI_Kommunal(self):
+        print("Kommune shapefile missing. Creating it.")
+        import shapefile
+        myshp = open("Kommune_DAGI_1_2mio.shp", "rb")
+        mydbf = open("Kommune_DAGI_1_2mio.dbf", "rb")
+        sf = shapefile.Reader(shp=myshp, dbf=mydbf)
+        sf_list = list(sf.shapeRecords())
+        print('number of shapes imported:',len(sf.shapes()) )
+
+        # Collect
+        kommuner_list = []
+        kommune_dates_list = []
+        x_lon_list = []
+        y_lat_list = []
+        stemme_pct_list = []
+        self.kdic = {}
+        j = 0
+        for i, shape in enumerate(sf_list):
+            # Get datetime
+            kommune_date = shape.record[9] # [-1]
+            # Get kommune
+            kdata = shape.record[12]
+            if isinstance(kdata, (bytes, bytearray)):
+                kommune = kdata.decode("latin-1")
+            else:
+                kommune = kdata
+
+            npoints=len(shape.shape.points) # total points
+            nparts = len(shape.shape.parts) # total parts
+            if nparts == 1:
+                x_lon = np.zeros((len(shape.shape.points),1))
+                y_lat = np.zeros((len(shape.shape.points),1))
+                for ip in range(len(shape.shape.points)):
+                    x_lon[ip] = shape.shape.points[ip][0]
+                    y_lat[ip] = shape.shape.points[ip][1]
+                # Collect
+                kommuner_list.append(kommune)
+                kommune_dates_list.append(kommune_date.strftime("%Y-%m-%d"))
+                x_lon_list.append(x_lon)
+                y_lat_list.append(y_lat)
+                # Add to counter
+                j += 1
+
+            else: # loop over parts of each shape, plot separately
+                for ip in range(nparts): # loop over parts, plot separately
+                    i0=shape.shape.parts[ip]
+                    if ip < nparts-1:
+                        i1 = shape.shape.parts[ip+1]-1
+                    else:
+                        i1 = npoints
+
+                    seg=shape.shape.points[i0:i1+1]
+                    x_lon = np.zeros((len(seg),1))
+                    y_lat = np.zeros((len(seg),1))
+                    for ip in range(len(seg)):
+                        x_lon[ip] = seg[ip][0]
+                        y_lat[ip] = seg[ip][1]
+                    # Collect
+                    kommuner_list.append(kommune)
+                    kommune_dates_list.append(kommune_date.strftime("%Y-%m-%d"))
+                    x_lon_list.append(x_lon)
+                    y_lat_list.append(y_lat)
+                # Add to counter
+                j += 1
+
+        # Print
+        print('number of shapes stored:', j )
+        # Store all kommuner
+        self.kdic['kommuner'] = kommuner_list
+        self.kdic['x_lon'] = x_lon_list
+        self.kdic['y_lat'] = y_lat_list
+        self.kdic['kommuner_dates'] = kommune_dates_list
+        # Save
+        with open(self.dic_file, 'wb') as f:
+            pickle.dump(self.kdic, f, pickle.HIGHEST_PROTOCOL)
 
     def make_map_Digdag_Kommunal(self):
         print("Kommune shapefile missing. Creating it.")
