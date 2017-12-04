@@ -3,6 +3,7 @@ import os.path
 import numpy as np
 import datetime
 import bokeh.models as bm
+import pickle
 
 def check_isnotebook():
     try:
@@ -155,129 +156,130 @@ class kmap:
     # Navnet på datasættet(ene): Digdag (Kommunal)
     # Tidspunkt, hvor datasættet(ene) er hentet hos myndigheden, eller om der er tale om en datatjeneste. : 2017/12/03
     def __init__(self, make=False):
-        import pickle
-
         # If file exists
-        dic_file = "Kommune.pkl"
-        if os.path.isfile(dic_file) and not make:
+        self.dic_file = "Kommune.pkl"
+        if os.path.isfile(self.dic_file) and not make:
             print("Kommune shapefile exists. Reading it.")
-            with open(dic_file, 'rb') as f:
+            with open(self.dic_file, 'rb') as f:
                 self.kdic = pickle.load(f)
         # Create it
         else:
-            print("Kommune shapefile missing. Creating it.")
-            import shapefile
-            myshp = open("Kommune.shp", "rb")
-            mydbf = open("Kommune.dbf", "rb")
-            sf = shapefile.Reader(shp=myshp, dbf=mydbf)
-            sf_list = list(sf.shapeRecords())
-            print('number of shapes imported:',len(sf.shapes()) )
+            self.make_map_Digdag_Kommunal()
 
-            kommune_date_min = datetime.datetime.strptime('2006-01-01', '%Y-%m-%d')
-            # From: https://chrishavlin.wordpress.com/2016/11/16/shapefiles-tutorial/
-            # First loop to check time
-            sel_kommuner = []
-            sel_times = []
-            for i, shape in enumerate(sf_list):
-                # Get date string and store
-                kommune_date_str = shape.record[3]
-                # Get time object
-                kommune_date = datetime.datetime.strptime(kommune_date_str, '%Y-%m-%d')
-                # Skip if shape time is less than minimum date
-                if kommune_date < kommune_date_min:
-                    continue
-                # Get kommune
-                kdata = shape.record[1]
-                if isinstance(kdata, (bytes, bytearray)):
-                    kommune = kdata.decode("latin-1")
-                else:
-                    kommune = kdata
-                kommune = kommune.split(" Kommune")[0]
-                # Test kommune exists
-                if kommune not in sel_kommuner:
-                    sel_kommuner.append(kommune)
-                    sel_times.append(kommune_date)
-                else:
-                    index = sel_kommuner.index(kommune)
-                    prev_time = sel_times[index]
-                    # Replace
-                    if kommune_date > prev_time:
-                        sel_times[index] = kommune_date
+    def make_map_Digdag_Kommunal(self):
+        print("Kommune shapefile missing. Creating it.")
+        import shapefile
+        myshp = open("Kommune_Digdag_Kommunal.shp", "rb")
+        mydbf = open("Kommune_Digdag_Kommunal.dbf", "rb")
+        sf = shapefile.Reader(shp=myshp, dbf=mydbf)
+        sf_list = list(sf.shapeRecords())
+        print('number of shapes imported:',len(sf.shapes()) )
 
-            # Loop again
-            # Collect
-            kommuner_list = []
-            kommune_dates_list = []
-            x_lon_list = []
-            y_lat_list = []
-            stemme_pct_list = []
-            self.kdic = {}
+        kommune_date_min = datetime.datetime.strptime('2006-01-01', '%Y-%m-%d')
+        # From: https://chrishavlin.wordpress.com/2016/11/16/shapefiles-tutorial/
+        # First loop to check time
+        sel_kommuner = []
+        sel_times = []
+        for i, shape in enumerate(sf_list):
+            # Get date string and store
+            kommune_date_str = shape.record[3]
+            # Get time object
+            kommune_date = datetime.datetime.strptime(kommune_date_str, '%Y-%m-%d')
+            # Skip if shape time is less than minimum date
+            if kommune_date < kommune_date_min:
+                continue
+            # Get kommune
+            kdata = shape.record[1]
+            if isinstance(kdata, (bytes, bytearray)):
+                kommune = kdata.decode("latin-1")
+            else:
+                kommune = kdata
+            kommune = kommune.split(" Kommune")[0]
+            # Test kommune exists
+            if kommune not in sel_kommuner:
+                sel_kommuner.append(kommune)
+                sel_times.append(kommune_date)
+            else:
+                index = sel_kommuner.index(kommune)
+                prev_time = sel_times[index]
+                # Replace
+                if kommune_date > prev_time:
+                    sel_times[index] = kommune_date
 
-            j = 0
-            for i, shape in enumerate(sf_list):
-                # Get kommune
-                kdata = shape.record[1]
-                if isinstance(kdata, (bytes, bytearray)):
-                    kommune = kdata.decode("latin-1")
-                else:
-                    kommune = kdata
-                kommune = kommune.split(" Kommune")[0]
-                # Get date string and store
-                kommune_date_str = shape.record[3]
-                # Get time object
-                kommune_date = datetime.datetime.strptime(kommune_date_str, '%Y-%m-%d')
-                if kommune in sel_kommuner:
-                    index = sel_kommuner.index(kommune)
-                    prev_time = sel_times[index]
-                    # If time matches from before
-                    if kommune_date == prev_time:
-                        npoints=len(shape.shape.points) # total points
-                        nparts = len(shape.shape.parts) # total parts
-                        if nparts == 1:
-                            x_lon = np.zeros((len(shape.shape.points),1))
-                            y_lat = np.zeros((len(shape.shape.points),1))
-                            for ip in range(len(shape.shape.points)):
-                                x_lon[ip] = shape.shape.points[ip][0]
-                                y_lat[ip] = shape.shape.points[ip][1]
+        # Loop again
+        # Collect
+        kommuner_list = []
+        kommune_dates_list = []
+        x_lon_list = []
+        y_lat_list = []
+        stemme_pct_list = []
+        self.kdic = {}
+
+        j = 0
+        for i, shape in enumerate(sf_list):
+            # Get kommune
+            kdata = shape.record[1]
+            if isinstance(kdata, (bytes, bytearray)):
+                kommune = kdata.decode("latin-1")
+            else:
+                kommune = kdata
+            kommune = kommune.split(" Kommune")[0]
+            # Get date string and store
+            kommune_date_str = shape.record[3]
+            # Get time object
+            kommune_date = datetime.datetime.strptime(kommune_date_str, '%Y-%m-%d')
+            if kommune in sel_kommuner:
+                index = sel_kommuner.index(kommune)
+                prev_time = sel_times[index]
+                # If time matches from before
+                if kommune_date == prev_time:
+                    npoints=len(shape.shape.points) # total points
+                    nparts = len(shape.shape.parts) # total parts
+                    if nparts == 1:
+                        x_lon = np.zeros((len(shape.shape.points),1))
+                        y_lat = np.zeros((len(shape.shape.points),1))
+                        for ip in range(len(shape.shape.points)):
+                            x_lon[ip] = shape.shape.points[ip][0]
+                            y_lat[ip] = shape.shape.points[ip][1]
+                        # Collect
+                        kommuner_list.append(kommune)
+                        kommune_dates_list.append(kommune_date_str)
+                        x_lon_list.append(x_lon)
+                        y_lat_list.append(y_lat)
+                        # Add to counter
+                        j += 1
+
+                    else: # loop over parts of each shape, plot separately
+                        for ip in range(nparts): # loop over parts, plot separately
+                            i0=shape.shape.parts[ip]
+                            if ip < nparts-1:
+                                i1 = shape.shape.parts[ip+1]-1
+                            else:
+                                i1 = npoints
+
+                            seg=shape.shape.points[i0:i1+1]
+                            x_lon = np.zeros((len(seg),1))
+                            y_lat = np.zeros((len(seg),1))
+                            for ip in range(len(seg)):
+                                x_lon[ip] = seg[ip][0]
+                                y_lat[ip] = seg[ip][1]
                             # Collect
                             kommuner_list.append(kommune)
                             kommune_dates_list.append(kommune_date_str)
                             x_lon_list.append(x_lon)
                             y_lat_list.append(y_lat)
-                            # Add to counter
-                            j += 1
-
-                        else: # loop over parts of each shape, plot separately
-                            for ip in range(nparts): # loop over parts, plot separately
-                                i0=shape.shape.parts[ip]
-                                if ip < nparts-1:
-                                    i1 = shape.shape.parts[ip+1]-1
-                                else:
-                                    i1 = npoints
-
-                                seg=shape.shape.points[i0:i1+1]
-                                x_lon = np.zeros((len(seg),1))
-                                y_lat = np.zeros((len(seg),1))
-                                for ip in range(len(seg)):
-                                    x_lon[ip] = seg[ip][0]
-                                    y_lat[ip] = seg[ip][1]
-                                # Collect
-                                kommuner_list.append(kommune)
-                                kommune_dates_list.append(kommune_date_str)
-                                x_lon_list.append(x_lon)
-                                y_lat_list.append(y_lat)
-                            # Add to counter
-                            j += 1
-            # Print
-            print('number of shapes stored:', j )
-            # Store all kommuner
-            self.kdic['kommuner'] = kommuner_list
-            self.kdic['x_lon'] = x_lon_list
-            self.kdic['y_lat'] = y_lat_list
-            self.kdic['kommuner_dates'] = kommune_dates_list
-            # Save
-            with open(dic_file, 'wb') as f:
-                pickle.dump(self.kdic, f, pickle.HIGHEST_PROTOCOL)
+                        # Add to counter
+                        j += 1
+        # Print
+        print('number of shapes stored:', j )
+        # Store all kommuner
+        self.kdic['kommuner'] = kommuner_list
+        self.kdic['x_lon'] = x_lon_list
+        self.kdic['y_lat'] = y_lat_list
+        self.kdic['kommuner_dates'] = kommune_dates_list
+        # Save
+        with open(self.dic_file, 'wb') as f:
+            pickle.dump(self.kdic, f, pickle.HIGHEST_PROTOCOL)
 
     def make_map_source(self, df=None):
         # Test if there exists data
