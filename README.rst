@@ -34,6 +34,8 @@ Launch interactive Jupyter Notebook mybinder.org_ to try examples:
 .. image:: https://mybinder.org/badge.svg
    :target: https://mybinder.org/v2/gh/tlinnet/kmdvalg/master
 
+.. image:: https://raw.githubusercontent.com/tlinnet/kmdvalg/master/docs/images/image1.png
+
 How to install?
 ---------------
 If using conda, these steps will install an environment
