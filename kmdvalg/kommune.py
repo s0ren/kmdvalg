@@ -107,6 +107,8 @@ class data:
             df = pd.read_pickle(df_file)
         else:
             print("Kommune data missing. Creating it.")
+            if not hasattr(self, 'kommuner'):
+                self.get_kommuner()
             # Collect
             kommune_list = []
             Antal_stemmeberettigede_list = []
