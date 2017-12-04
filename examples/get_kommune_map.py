@@ -13,7 +13,8 @@ import bokeh.plotting as bplt
 """# Get kommune list"""
 data = kommune.data()
 # Get info
-df = data.get_kommuner_df()
+#df = data.get_kommuner_df()
+df = data.get_kommuner_df(make=True)
 
 """# Get kommune map"""
 #kmap = kommune.kmap(make=True)
