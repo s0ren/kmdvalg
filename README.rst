@@ -7,7 +7,7 @@ What is kmdvalg?
 
 * It is a wrapper around *BeautifulSoup* to extract data from www.kmdvalg.dk.
 * Bokeh map patches are created with *pyshp* from shapefiles.
-* The shapefile dataset is: 'Digdag (Kommunal)' downloaded 2017/12/03 from https://download.kortforsyningen.dk.
+* The shapefile dataset is: 'Digdag (Kommunal)' and 'DAGI 1:2 mio' downloaded 2017/12/03 from https://download.kortforsyningen.dk.
 * The voting information is combined with map information before plotting.
 
 Important links
