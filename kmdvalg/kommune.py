@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os.path
 import numpy as np
 import datetime
@@ -288,10 +289,22 @@ class kmap:
             # Loop through dic
             for i, kommune in enumerate(kdic['kommuner']):
                 #kommune_date = kdic['kommuner_dates'][i]
+                #print(kommune.replace("Aa", "Å"))
                 if kommune in df['Kommune'].values:
                     stemme_pct = df.loc[df['Kommune'] == kommune, 'stemme_pct'].iloc[0]
                     stemme_pct_list.append(stemme_pct)
+                # If s is added
+                elif kommune[:-1] in df['Kommune'].values:
+                    stemme_pct = df.loc[df['Kommune'] == kommune[:-1], 'stemme_pct'].iloc[0]
+                    stemme_pct_list.append(stemme_pct)
+                elif kommune+"s" in df['Kommune'].values:
+                    stemme_pct = df.loc[df['Kommune'] == kommune+"s", 'stemme_pct'].iloc[0]
+                    stemme_pct_list.append(stemme_pct)
+                elif kommune.replace("Å", "Aa").replace("å", "aa").replace("Høje Taastrup","Høje-Taastrup") in df['Kommune'].values:
+                    stemme_pct = df.loc[df['Kommune'] == kommune.replace("Å", "Aa").replace("å", "aa").replace("Høje Taastrup","Høje-Taastrup"), 'stemme_pct'].iloc[0]
+                    stemme_pct_list.append(stemme_pct)
                 else:
+                    #print(kommune, "Not found")
                     stemme_pct_list.append(None)
             # append
             kdic['stemme_pct'] = stemme_pct_list
