@@ -5,6 +5,11 @@ kmdvalg
 What is kmdvalg?
 ----------------
 
+* It is a wrapper around *BeautifulSoup* to extract data from www.kmdvalg.dk.
+* Bokeh map patches are are created with *pyshp* from shapefiles.
+* The shapefile dataset is: 'Digdag (Kommunal)' downloaded 2017/12/03 from https://download.kortforsyningen.dk.
+* The voting information is combined with map information before plotting.
+
 Important links
 ---------------
 
@@ -28,7 +33,6 @@ Launch interactive Jupyter Notebook mybinder.org_ to try examples:
 
 .. image:: https://mybinder.org/badge.svg
    :target: https://mybinder.org/v2/gh/tlinnet/kmdvalg/master
-
 
 How to install?
 ---------------
