@@ -18,7 +18,7 @@ for filepath in glob.iglob('**/*.py', recursive=True):
         # Convert
         python_to_notebook(f+'.py', f+'.ipynb')
         # Execute it
-        subprocess.call(["jupyter", "nbconvert", "--allow-errors", "--ExecutePreprocessor.timeout=30", "--to", "notebook", "--execute", f+'.ipynb', "--output", f+'.ipynb'])
+        subprocess.call(["jupyter", "nbconvert", "--allow-errors", "--ExecutePreprocessor.timeout=180", "--to", "notebook", "--execute", f+'.ipynb', "--output", f+'.ipynb'])
         # Trust notebook
         subprocess.call(["jupyter", "trust", f+'.ipynb'])
         print("Converting to .ipynb notebook:", filepath)
