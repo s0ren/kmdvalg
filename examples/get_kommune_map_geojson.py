@@ -21,7 +21,7 @@ import os
 
 """# Get plot"""
 map_fig = plt.figure(title="Test")
-map_res = plt.geo(map_data=topo_load(os.getcwd()+os.sep+"Kommune.json"), stroke_color='black')
+map_res = plt.geo(map_data=topo_load(os.getcwd()+os.sep+"Kommune_DAGI_1_2mio.json"), stroke_color='black')
 
 """# Show output"""
 # Get output. Either to Jupyter notebook or html file 
