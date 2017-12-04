@@ -19,4 +19,5 @@ dependencies:
 - rise
 - pip:
   - kmdvalg
+  - pyproj
   - https://github.com/sklam/py2nb/archive/master.zip
