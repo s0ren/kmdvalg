@@ -19,4 +19,5 @@ dependencies:
 - python-dateutil
 - rise
 - pip:
+  - kmdvalg
   - https://github.com/sklam/py2nb/archive/master.zip

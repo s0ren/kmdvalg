@@ -11,6 +11,25 @@ Important links
 * Source code: https://github.com/tlinnet/kmdvalg
 * PyPI package: https://pypi.python.org/pypi/kmdvalg
 
+See examples
+------------------------
+
+Use **nbviewer.jupyter.org** to:
+
+* See Notebook to list Danske kommuner: get_kommune.ipynb_
+* See Notebook to make bokeh map of Kommunevalg 2017: get_kommune_map.ipynb_
+
+.. _get_kommune.ipynb: http://nbviewer.jupyter.org/github/tlinnet/kmdvalg/blob/master/examples/get_kommune.ipynb
+.. _get_kommune_map.ipynb: http://nbviewer.jupyter.org/github/tlinnet/kmdvalg/blob/master/examples/get_kommune_map.ipynb
+
+Launch interactive Jupyter Notebook mybinder.org_ to try examples:
+
+.. _mybinder.org: https://mybinder.org/v2/gh/tlinnet/kmdvalg/master
+
+.. image:: https://mybinder.org/badge.svg
+   :target: https://mybinder.org/v2/gh/tlinnet/kmdvalg/master
+
+
 How to install?
 ---------------
 If using conda, these steps will install an environment
