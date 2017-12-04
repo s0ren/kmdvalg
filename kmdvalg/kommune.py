@@ -4,7 +4,6 @@ import numpy as np
 import datetime
 import bokeh.models as bm
 import pickle
-import json
 
 def check_isnotebook():
     try:
@@ -161,7 +160,6 @@ class kmap:
     def __init__(self, make=False):
         # If file exists
         self.dic_file = "Kommune.pkl"
-        self.json_file = "Kommune.json"
         if os.path.isfile(self.dic_file) and not make:
             print("Kommune shapefile exists. Reading it.")
             with open(self.dic_file, 'rb') as f:
@@ -183,13 +181,6 @@ class kmap:
         sf_list = list(sf.shapeRecords())
         print('number of shapes imported:',len(sf.shapes()) )
 
-        # For GEOjson
-        #from pyproj import Proj
-        #fields = sf.fields[1:]
-        #field_names = [field[0] for field in fields]
-        ##myProj = Proj("+proj=utm +zone=32N, +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs")
-        #myProj = Proj(proj='utm',zone="32N", ellps='WGS84')
-
         # Collect
         kommuner_list = []
         kommune_dates_list = []
@@ -197,29 +188,8 @@ class kmap:
         y_lat_list = []
         stemme_pct_list = []
         self.kdic = {}
-        #json_buffer = []
         j = 0
         for i, shape in enumerate(sf_list):
-            # For GEOjson
-            shape_record_list = []
-            for x in shape.record:
-                if isinstance(x, (bytes, bytearray)):
-                    l = x.decode("latin-1")
-                elif isinstance(x, datetime.date):
-                    l = x.strftime("%Y-%m-%d")
-                else:
-                    l = x
-                shape_record_list.append(l)
-            #atr = dict(zip(field_names, shape_record_list))
-            #geom = shape.shape.__geo_interface__
-            #geom_t = geom['coordinates'][0]
-            # Unzip tuble of tubles
-            #x, y = zip(*geom_t)
-            # Convert
-            #lons, lats = myProj(x, y, inverse=True)
-            #geom_arc = dict('type': 'Polygon')
-            #json_buffer.append(dict(type="Feature", geometry=geom, properties=atr)) 
-
             # Get datetime
             kommune_date = shape.record[9] # [-1]
             # Get kommune
@@ -277,8 +247,6 @@ class kmap:
         # Save
         with open(self.dic_file, 'wb') as f:
             pickle.dump(self.kdic, f, pickle.HIGHEST_PROTOCOL)
-        #with open(self.json_file, "w") as f:
-        #    f.write(json.dumps({"type": "FeatureCollection", "features": json_buffer}, indent=2) + "\n")
 
     def make_map_Digdag_Kommunal(self):
         print("Kommune shapefile missing. Creating it.")
