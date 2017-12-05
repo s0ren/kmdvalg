@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import os.path
+import os.path, os
 import numpy as np
 import datetime
 import bokeh.models as bm
@@ -175,8 +175,8 @@ class kmap:
     def make_map_DAGI_Kommunal(self):
         print("Kommune shapefile missing. Creating it.")
         import shapefile
-        myshp = open("Kommune_DAGI_1_2mio.shp", "rb")
-        mydbf = open("Kommune_DAGI_1_2mio.dbf", "rb")
+        myshp = open("Data"+os.sep+"DAGI_Kommunal_1_2mio_kortforsyningen"+os.sep+"Kommune_DAGI_1_2mio.shp", "rb")
+        mydbf = open("Data"+os.sep+"DAGI_Kommunal_1_2mio_kortforsyningen"+os.sep+"Kommune_DAGI_1_2mio.dbf", "rb")
         sf = shapefile.Reader(shp=myshp, dbf=mydbf)
         sf_list = list(sf.shapeRecords())
         print('number of shapes imported:',len(sf.shapes()) )
@@ -251,8 +251,8 @@ class kmap:
     def make_map_Digdag_Kommunal(self):
         print("Kommune shapefile missing. Creating it.")
         import shapefile
-        myshp = open("Kommune_Digdag_Kommunal.shp", "rb")
-        mydbf = open("Kommune_Digdag_Kommunal.dbf", "rb")
+        myshp = open("Data"+os.sep+"Digdag_Kommunal_kortforsyningen"+os.sep+"Kommune_Digdag_Kommunal.shp", "rb")
+        mydbf = open("Data"+os.sep+"Digdag_Kommunal_kortforsyningen"+os.sep+"Kommune_Digdag_Kommunal.dbf", "rb")
         sf = shapefile.Reader(shp=myshp, dbf=mydbf)
         sf_list = list(sf.shapeRecords())
         print('number of shapes imported:',len(sf.shapes()) )
