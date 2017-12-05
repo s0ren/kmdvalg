@@ -17,7 +17,6 @@ def check_isnotebook():
          # Probably standard Python interpreter
         return False
 
-
 class data:
     def __init__(self,):
         pass
@@ -50,11 +49,45 @@ class data:
 
         self.kommuner = kommuner
         self.kommuner_links = kommuner_links
+
+    def get_kommune_dic_list(self):
+        import asyncio
+        # Check if exists
+        if not hasattr(self, 'kommuner_links'):
+            self.get_kommuner()
+
+        # Unpack
+        _, kommuner, kommune_links = zip(*self.kommuner)
+
+        loop = asyncio.get_event_loop()
+        d_list = loop.run_until_complete(self.get_kommune_dic_async(kommuner=kommuner, kommune_links=kommune_links))
+        return d_list
+
+    async def get_kommune_dic_async(self, kommuner=None, kommune_links=None):
+        import asyncio
+        import concurrent.futures
+        import requests
+        nw = len(kommune_links)
+
+        with concurrent.futures.ThreadPoolExecutor(max_workers=nw) as executor:
+            loop = asyncio.get_event_loop()
+            futures = []
+            # Make list of threads to be called
+            for i in range(nw):
+                futures.append(loop.run_in_executor(executor, requests.get, kommune_links[i]))
+            # Process them
+            i = 0
+            d_list = []
+            for response in await asyncio.gather(*futures):
+                kommune = kommuner[i]
+                d = self.get_dic_from_request(r=response, kommune=kommune)
+                d_list.append(d)
+                i += 1
+        return d_list
+
     
     def get_kommune_dic(self, kommune=None):
-        from bs4 import BeautifulSoup
         import requests
-
         # Check if exists
         if not hasattr(self, 'kommuner_links'):
             self.get_kommuner()
@@ -63,6 +96,11 @@ class data:
         link = self.kommuner_links[kommune]
         # Get the page
         r = requests.get(link)
+        d = self.get_dic_from_request(r=r, kommune=kommune)
+        return d
+
+    def get_dic_from_request(self, r, kommune):
+        from bs4 import BeautifulSoup
         # Make soup
         soup = BeautifulSoup(r.text, "html.parser")
 
@@ -92,12 +130,15 @@ class data:
 
         return d
 
-    def get_kommuner_df(self, n=None, make=False):
+    def get_kommuner_df(self, n=None, make=False, async=False):
         import pandas as pd
         import pickle
 
         # If file exists
-        df_file = "Valg2017_kommune.pkl"
+        if not async:
+            df_file = "Valg2017_kommune.pkl"
+        else:
+            df_file = "Valg2017_kommune_async.pkl"
 
         if os.path.isfile(df_file) and not make:
             print("Kommune data exists. Reading it.")
@@ -106,6 +147,24 @@ class data:
             print("Kommune data missing. Creating it.")
             if not hasattr(self, 'kommuner'):
                 self.get_kommuner()
+
+            # Loop over kommuner
+            if not async:
+                if n:
+                    kommuner = self.kommuner[:n]
+                else:
+                    kommuner = self.kommuner
+
+                kommune_dic_list = []
+                for kommune in kommuner:
+                    print("Reading for:", kommune)
+                    # Get kommune
+                    kommune_dic = self.get_kommune_dic(kommune[1])
+                    kommune_dic_list.append(kommune_dic)
+            else:
+                # asyncio
+                kommune_dic_list = self.get_kommune_dic_list()
+
             # Collect
             kommune_list = []
             Antal_stemmeberettigede_list = []
@@ -113,16 +172,7 @@ class data:
             I_alt_gyldige_stemmer_list = []
             I_alt_afgivne_stemmer_list = []
             stemme_pct_list = []
-
-            # Loop over kommuner
-            if n:
-                kommuner = self.kommuner[:n]
-            else:
-                kommuner = self.kommuner
-            for kommune in kommuner:
-                print("Reading for:", kommune)
-                # Get kommune
-                kommune_dic = self.get_kommune_dic(kommune[1])
+            for kommune_dic in kommune_dic_list:
                 # Append to lists
                 kommune_list.append(kommune_dic['kommune'][-1])
                 Antal_stemmeberettigede_list.append(kommune_dic['Antal_stemmeberettigede'][-1])
