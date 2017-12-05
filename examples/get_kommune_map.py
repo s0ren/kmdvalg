@@ -14,7 +14,7 @@ import bokeh.plotting as bplt
 data = kommune.data()
 # Get info
 #df = data.get_kommuner_df()
-df = data.get_kommuner_df(make=True)
+df = data.get_kommuner_df(make=True, async=True)
 
 """# Get kommune map"""
 #kmap = kommune.kmap(make=True)
