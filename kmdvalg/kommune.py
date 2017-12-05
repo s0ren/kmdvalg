@@ -69,7 +69,7 @@ class data:
         import requests
         nw = len(kommune_links)
 
-        with concurrent.futures.ThreadPoolExecutor(max_workers=nw) as executor:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
             loop = asyncio.get_event_loop()
             futures = []
             # Make list of threads to be called
