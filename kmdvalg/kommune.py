@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
 import os.path, os
-import numpy as np
-import datetime
-import bokeh.models as bm
-import pickle
 
 def check_isnotebook():
     try:
@@ -27,8 +23,8 @@ class data:
         pass
 
     def get_kommuner(self):
-        import requests
         from bs4 import BeautifulSoup
+        import requests
 
         # Get the page
         r = requests.get('https://www.kmdvalg.dk/Main/Home/KV')
@@ -98,6 +94,7 @@ class data:
 
     def get_kommuner_df(self, n=None, make=False):
         import pandas as pd
+        import pickle
 
         # If file exists
         df_file = "Valg2017_kommune.pkl"
@@ -158,6 +155,8 @@ class kmap:
     # Navnet på datasættet(ene): Digdag (Kommunal)
     # Tidspunkt, hvor datasættet(ene) er hentet hos myndigheden, eller om der er tale om en datatjeneste. : 2017/12/03
     def __init__(self, make=False):
+        import pickle
+
         # If file exists
         self.dic_file = "Kommune.pkl"
         if os.path.isfile(self.dic_file) and not make:
@@ -175,6 +174,10 @@ class kmap:
     def make_map_DAGI_Kommunal(self):
         print("Kommune shapefile missing. Creating it.")
         import shapefile
+        import datetime
+        import numpy as np
+        import pickle
+
         myshp = open("Data"+os.sep+"DAGI_Kommunal_1_2mio_kortforsyningen"+os.sep+"Kommune_DAGI_1_2mio.shp", "rb")
         mydbf = open("Data"+os.sep+"DAGI_Kommunal_1_2mio_kortforsyningen"+os.sep+"Kommune_DAGI_1_2mio.dbf", "rb")
         sf = shapefile.Reader(shp=myshp, dbf=mydbf)
@@ -251,6 +254,10 @@ class kmap:
     def make_map_Digdag_Kommunal(self):
         print("Kommune shapefile missing. Creating it.")
         import shapefile
+        import datetime
+        import numpy as np
+        import pickle
+
         myshp = open("Data"+os.sep+"Digdag_Kommunal_kortforsyningen"+os.sep+"Kommune_Digdag_Kommunal.shp", "rb")
         mydbf = open("Data"+os.sep+"Digdag_Kommunal_kortforsyningen"+os.sep+"Kommune_Digdag_Kommunal.dbf", "rb")
         sf = shapefile.Reader(shp=myshp, dbf=mydbf)
@@ -362,12 +369,10 @@ class kmap:
         # Save
         with open(self.dic_file, 'wb') as f:
             pickle.dump(self.kdic, f, pickle.HIGHEST_PROTOCOL)
-        # Save
-        with open(self.dic_file, 'wb') as f:
-            pickle.dump(self.kdic, f, pickle.HIGHEST_PROTOCOL)
-
 
     def make_map_source(self, df=None):
+        import bokeh.models as bm
+
         # Test if there exists data
         if type(df) != type(None):
             # Make copy of dict
@@ -405,6 +410,7 @@ class kmap:
 
     def get_map(self):
         import bokeh.plotting as bplt
+        import bokeh.models as bm
 
         wheel_zoom = bm.WheelZoomTool()
         self.hover = bm.HoverTool(tooltips=[
