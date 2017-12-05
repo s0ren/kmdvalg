@@ -23,6 +23,19 @@ dic_cph = data.get_kommune_dic('København')
 for key in dic_cph:
     print(key, dic_cph[key])
 
-"""# Get info all kommuner"""
-df = data.get_kommuner_df(n=1)
-print(df.head())
+"""# Get info all kommuner, synchronous mode"""
+#df_sync = data.get_kommuner_df(make=True, async=False)
+df_sync = data.get_kommuner_df(async=False)
+#print(df_sync)
+
+"""# Get info all kommuner, asyncio"""
+df_async = data.get_kommuner_df(make=True, async=True)
+#df_async = data.get_kommuner_df(async=True)
+#print(df_async)
+
+is_equal = df_sync.equals(df_async)
+print("Are asyncio equal to sync?:", is_equal)
+
+if not is_equal:
+    print(df_sync)
+    print(df_async)
