@@ -14,12 +14,21 @@ from bqplot import pyplot as plt
 from bqplot import *
 import os
 
-"""# Get plot"""
+"""# Get example plot"""
+map_fig_1 = plt.figure(title="Test for US map 1")
+_ = plt.geo(map_data=topo_load(os.getcwd()+os.sep+"Data"+os.sep+"USCountiesMap.topojson"), stroke_color='black')
+
+map_fig_2 = plt.figure(title="Test for US map 2")
+_ = plt.geo(map_data=topo_load(os.getcwd()+os.sep+"Data"+os.sep+"USCountiesMap.topojson"), stroke_color='green')
+
+
+"""# Get own plot"""
 # Map is converted online here: http://mapshaper.org/
 # First unzip, "KOMMUNAL_SHAPE_UTM32-EUREF89.zip" 
 # Then zip only "Kommune.*" files to a single zip.
 # Upload Kommune.zip
 
+# https://help.github.com/articles/mapping-geojson-files-on-github/
 # https://www.datavizforall.org/transform/mapshaper/
 # https://github.com/mbloch/mapshaper/issues/194
 # https://github.com/mbloch/mapshaper/wiki/Command-Reference
@@ -35,12 +44,13 @@ import os
 # Click "simplyfy", keep standard settings, lower to 0.0%.
 # Export to TopoJson
 
-map_fig = plt.figure(title="Test")
-map_res = plt.geo(map_data=topo_load(os.getcwd()+os.sep+"USCountiesMap.json"), stroke_color='black')
+
 #map_res = plt.geo(map_data=topo_load(os.getcwd()+os.sep+"Kommune_DAGI_1_2mio.json"), stroke_color='black')
 
 """# Show output"""
 # Get output. Either to Jupyter notebook or html file 
 if True:
     if kommune.check_isnotebook():
-        display(map_fig)
+        display(map_fig_1)
+        display(map_fig_2)        
+        
