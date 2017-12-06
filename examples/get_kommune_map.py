@@ -4,7 +4,7 @@ try:
 except ImportError:
     import sys, os
     sys.path.append( os.getcwd()+os.sep+"..")
-    print(sys.path)
+    print("Path appended. This is dev code.")
 
 """# Get import"""
 from kmdvalg import kommune
@@ -12,15 +12,14 @@ import bokeh.plotting as bplt
 
 """# Get kommune list"""
 data = kommune.data()
-# Get info
-#df = data.get_kommuner_df()
+# Get info, by async to speed up by factor 10x.
 df = data.get_kommuner_df(make=True, async=True)
 
-"""# Get kommune map"""
+"""# Get kommune map from shapefiles"""
 #kmap = kommune.kmap(make=True)
 kmap = kommune.kmap()
 
-# Make map data
+# Combine map data with voting data.
 kmap.make_map_source(df=df)
 
 fig = kmap.get_map()

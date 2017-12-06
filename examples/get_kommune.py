@@ -4,7 +4,7 @@ try:
 except ImportError:
     import sys, os
     sys.path.append( os.getcwd()+os.sep+"..")
-    print(sys.path)
+    print("Path appended. This is dev code.")
 
 """# Get import"""
 from kmdvalg import kommune
