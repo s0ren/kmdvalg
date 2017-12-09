@@ -129,7 +129,7 @@ Now convert
 # Convert: merc
 mapshaper ${IN}.shp -simplify dp 20% -proj $TO_MERC from=$FROM -o format=geojson ${IN}_merc.geojson
 
-# Convert: merc
+# Convert: longlat
 mapshaper ${IN}.shp -simplify dp 20% -proj $TO_LL from=$FROM -o format=geojson ${IN}_longlat.geojson
 ```
 
