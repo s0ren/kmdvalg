@@ -6,9 +6,11 @@
 * [https://github.com/mbloch/mapshaper/issues/194](https://github.com/mbloch/mapshaper/issues/194)
 * [https://github.com/mbloch/mapshaper/wiki/Command-Reference](https://github.com/mbloch/mapshaper/wiki/Command-Reference)
 * [http://spatialreference.org/ref/epsg/wgs-84-utm-zone-32n/](http://spatialreference.org/ref/epsg/wgs-84-utm-zone-32n/)
+* [https://stackoverflow.com/questions/3149112/how-can-i-get-proj4-details-from-the-shapefiles-prj-file](https://stackoverflow.com/questions/3149112/how-can-i-get-proj4-details-from-the-shapefiles-prj-file)
+* [https://gis.stackexchange.com/questions/7608/shapefile-prj-to-postgis-srid-lookup-table/7615#7615](https://gis.stackexchange.com/questions/7608/shapefile-prj-to-postgis-srid-lookup-table/7615#7615)
 
 
-# Install mapshaper
+# Install mapshaper and gdal
 
 
 ```
@@ -25,7 +27,11 @@ which npm | xargs ls -l
 
 # Install mapshaper
 npm install -g mapshaper
+
+# Python
+conda create --yes -c conda-forge -n OSMNX python=3.6 osmnx gdal
 ```
+
 
 # Convert to geojson
 
@@ -52,13 +58,32 @@ Wee see the the zone:
 PROJCS["ETRS_1989_UTM_Zone_32N
 ```
 
-## Find input coordinate system
+## Find input coordinate system manully
 On [https://mygeodata.cloud/cs2cs/](https://mygeodata.cloud/cs2cs/), in '**Chose input coordinate system**' we search for **ETRS89 / UTM zone 32N**.
 
 This gives **EPSG=25832** and Proj.4 text
 
 ```
 +proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs
+```
+
+## Find input coordinate system with python and GDAL
+
+```
+# Activate conda environment
+source activate OSMNX
+
+# Read
+IN=Kommune_DAGI_1_2mio
+gdalsrsinfo ${IN}.prj -o all
+gdalsrsinfo ${IN}.prj -o PROJ4
+
+'+proj=utm +zone=32 +ellps=GRS80 +units=m +no_defs '
+
+# Try with python
+python -c "from osgeo import osr;p=open('${IN}.prj', 'r').read();s=osr.SpatialReference();s.ImportFromESRI([p]);print(s.ExportToProj4())"
+
+'+proj=utm +zone=32 +ellps=GRS80 +units=m +no_defs'
 ```
 
 ## Find output coordinate system
@@ -86,7 +111,8 @@ Use
 IN=Kommune_DAGI_1_2mio
 
 # Define coordinate system FROM
-FROM="+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
+#FROM="+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
+FROM="+proj=utm +zone=32 +ellps=GRS80 +units=m +no_defs"
 
 # Define coordinate system TO of merc coordinates
 TO_MERC="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 
@@ -105,7 +131,16 @@ mapshaper ${IN}.shp -simplify dp 20% -proj $TO_MERC from=$FROM -o format=geojson
 
 # Convert: merc
 mapshaper ${IN}.shp -simplify dp 20% -proj $TO_LL from=$FROM -o format=geojson ${IN}_longlat.geojson
+```
 
+Test with EPSG codes
+
+```
+IN=Kommune_DAGI_1_2mio
+TO_EPSG="+proj=longlat +init=EPSG:3857"
+FROM_EPSG="+init=EPSG:25832"
+
+mapshaper ${IN}.shp -simplify dp 20% -proj $TO_EPSG from=$FROM_EPSG -o format=geojson ${IN}_EPSG.geojson
 ```
 
 Afterwards test the .geojson file with **mapshaper-gui**
@@ -113,3 +148,5 @@ Afterwards test the .geojson file with **mapshaper-gui**
 ```
 mapshaper-gui
 ```
+
+[Github map](https://github.com/tlinnet/kmdvalg/tree/master/examples/Data/DAGI_Kommunal_1_2mio_kortforsyningen)
