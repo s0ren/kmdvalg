@@ -8,50 +8,60 @@ except ImportError:
 
 """# Get import"""
 from kmdvalg import kommune
-
-"""# Get plot import"""
 from bqplot import pyplot as plt
-from bqplot import *
+from bqplot import (
+    Map, Mercator, Orthographic, ColorScale, ColorAxis,
+    AlbersUSA, topo_load, Tooltip
+)
 import os
 
-"""# Get example plot"""
-map_fig_1 = plt.figure(title="Test for US map 1")
-_ = plt.geo(map_data=topo_load(os.getcwd()+os.sep+"Data"+os.sep+"USCountiesMap.topojson"), stroke_color='black')
+"""# Example 1"""
+sc_geo = Mercator()
+map_mark = Map(scales={'projection': sc_geo})
+fig = plt.figure(marks=[map_mark], title='Basic Map Example')
+if kommune.check_isnotebook():
+    display(fig)
 
-map_fig_2 = plt.figure(title="Test for US map 2")
-_ = plt.geo(map_data=topo_load(os.getcwd()+os.sep+"Data"+os.sep+"USCountiesMap.topojson"), stroke_color='green')
+"""# Example 2"""
+#sc_geo = Mercator()
+sc_geo = Orthographic(scale_factor=375, center=[0, 25], rotate=(-50, 0))
+map_mark = Map(map_data=topo_load('map_data/WorldMap.json'), scales={'projection': sc_geo}, 
+        colors={682: 'Green', 356: 'Red', 643: '#0000ff', 'default_color': 'DarkOrange'})
+fig = plt.figure(marks=[map_mark], fig_color='deepskyblue', title='Advanced Map Example')
+if kommune.check_isnotebook():
+    display(fig)
+    
+"""# Example 3"""
+sc_geo = Mercator()
+sc_c1 = ColorScale(scheme='YlOrRd')
 
+map_styles = {'color': {643: 105., 4: 21., 398: 23., 156: 42., 124:78., 76: 98.},
+              'scales': {'projection': sc_geo, 'color': sc_c1}, 'colors': {'default_color': 'Grey'}}
 
-"""# Get own plot
+axis = ColorAxis(scale=sc_c1)
 
-* Map is converted online here: http://mapshaper.org/
-* First unzip, "KOMMUNAL_SHAPE_UTM32-EUREF89.zip" 
-* Then zip only "Kommune.*" files to a single zip.
-* Upload Kommune.zip
+chloro_map = Map(map_data=topo_load('map_data/WorldMap.json'), **map_styles)
+fig = plt.figure(marks=[chloro_map], axes=[axis],title='Choropleth Example')
+if kommune.check_isnotebook():
+    display(fig)
+    
+"""# Example 4"""
+#sc_geo = Mercator(center=(-110,60), scale_factor=500)
+sc_geo = AlbersUSA(translate=(500, 300), scale_factor=1200)
 
-* https://www.statsilk.com/maps/convert-esri-shapefile-map-geojson-format
-* https://help.github.com/articles/mapping-geojson-files-on-github/
-* https://www.datavizforall.org/transform/mapshaper/
-* https://github.com/mbloch/mapshaper/issues/194
-* https://github.com/mbloch/mapshaper/wiki/Command-Reference
-* http://spatialreference.org/ref/epsg/wgs-84-utm-zone-32n/
-* In console
-* -projections
-* -proj +proj=utm +zone=32N, +ellps=WGS84 +datum=WGS84 +units=m
-* -proj wgs84
-* -proj +proj=longlat +datum=WGS84 +no_defs from='+proj=tmerc +lat_0=0 +lon_0=114 +k=1.000000 +x_0=500000 +y_0=0 +ellps=krass +units=m +no_defs'
-* -proj +proj=longlat +datum=WGS84 +no_defs from='+proj=utm +zone=32N, +ellps=WGS84 +datum=WGS84 +units=m'
+data = os.getcwd()+os.sep+"Data"+os.sep+"USCountiesMap.topojson"
+map_mark = Map(map_data=topo_load(data), scales={'projection': sc_geo})
+map_fig_1 = plt.figure(marks=[map_mark], fig_color='deepskyblue', title='Test for US map')
 
-* Click "simplyfy", keep standard settings, lower to 0.0%.
-* Export to TopoJson
-"""
+if kommune.check_isnotebook():
+    display(map_fig_1)
+    
+"""# Denmar"""
+sc_geo = Mercator(center=(11,56.7), scale_factor=7000)
 
-#map_res = plt.geo(map_data=topo_load(os.getcwd()+os.sep+"Kommune_DAGI_1_2mio.json"), stroke_color='black')
+data = os.getcwd()+os.sep+"Data"+os.sep+"DAGI_Kommunal_1_2mio_kortforsyningen"+os.sep+"Kommune_DAGI_1_2mio_EPSG.geojson"
+map_mark = Map(map_data=topo_load(data), scales={'projection': sc_geo})
+map_fig_1 = plt.figure(marks=[map_mark], fig_color='deepskyblue', title='Test for Denmark Kommune map')
 
-"""# Show output"""
-# Get output. Either to Jupyter notebook or html file 
-if True:
-    if kommune.check_isnotebook():
-        display(map_fig_1)
-        display(map_fig_2)        
-        
+if kommune.check_isnotebook():
+    display(map_fig_1)
