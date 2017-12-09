@@ -95,3 +95,9 @@ FROM="+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
 # Convert
 mapshaper ${IN}.shp -simplify dp 20% -proj $TO from=$FROM -o format=geojson ${IN}.geojson
 ```
+
+Afterwards test the .geojson file with **mapshaper-gui**
+
+```
+mapshaper-gui
+```
