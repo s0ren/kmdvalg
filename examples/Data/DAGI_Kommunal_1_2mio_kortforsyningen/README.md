@@ -85,15 +85,27 @@ Use
 # Set variable
 IN=Kommune_DAGI_1_2mio
 
-# Define coordinate system TO
-TO="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 
-+y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs"
-
 # Define coordinate system FROM
 FROM="+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
 
-# Convert
-mapshaper ${IN}.shp -simplify dp 20% -proj $TO from=$FROM -o format=geojson ${IN}.geojson
+# Define coordinate system TO of merc coordinates
+TO_MERC="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 
++y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs"
+
+# Define coordinate system TO of longlat coordinates
+TO_LL="+proj=longlat +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 
++y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs"
+```
+
+Now convert
+
+```
+# Convert: merc
+mapshaper ${IN}.shp -simplify dp 20% -proj $TO_MERC from=$FROM -o format=geojson ${IN}_merc.geojson
+
+# Convert: merc
+mapshaper ${IN}.shp -simplify dp 20% -proj $TO_LL from=$FROM -o format=geojson ${IN}_longlat.geojson
+
 ```
 
 Afterwards test the .geojson file with **mapshaper-gui**
