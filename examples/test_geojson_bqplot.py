@@ -56,12 +56,16 @@ map_fig_1 = plt.figure(marks=[map_mark], fig_color='deepskyblue', title='Test fo
 if kommune.check_isnotebook():
     display(map_fig_1)
     
-"""# Denmar"""
+"""# Denmark"""
 sc_geo = Mercator(center=(11,56.7), scale_factor=7000)
 
 data = os.getcwd()+os.sep+"Data"+os.sep+"DAGI_Kommunal_1_2mio_kortforsyningen"+os.sep+"Kommune_DAGI_1_2mio_EPSG.geojson"
-map_mark = Map(map_data=topo_load(data), scales={'projection': sc_geo})
-map_fig_1 = plt.figure(marks=[map_mark], fig_color='deepskyblue', title='Test for Denmark Kommune map')
+map_mark_dk = Map(map_data=topo_load(data), scales={'projection': sc_geo})
+
+map_style_eu = {'scales': {'projection': sc_geo}, 'colors': {'default_color': 'Grey'}}
+map_mark_eu = Map(map_data=topo_load('map_data/EuropeMap.json'), **map_style_eu)
+
+map_fig_1 = plt.figure(marks=[map_mark_eu, map_mark_dk], fig_color='deepskyblue', title='Test for Denmark Kommune map')
 
 if kommune.check_isnotebook():
     display(map_fig_1)
