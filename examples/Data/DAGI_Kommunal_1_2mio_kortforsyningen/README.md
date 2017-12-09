@@ -150,3 +150,20 @@ mapshaper-gui
 ```
 
 [Github map](https://github.com/tlinnet/kmdvalg/tree/master/examples/Data/DAGI_Kommunal_1_2mio_kortforsyningen)
+
+# Conclusion
+
+The converting is only working with:
+
+```
+IN=Kommune_DAGI_1_2mio
+TO_EPSG="+proj=longlat +init=EPSG:3857"
+FROM_EPSG="+init=EPSG:25832"
+
+mapshaper ${IN}.shp -simplify dp 20% -proj $TO_EPSG from=$FROM_EPSG -o format=geojson ${IN}_EPSG.geojson
+```
+
+It is necessary to
+
+* apply **proj=longlat** for output
+* Convert using EPSG codes.
