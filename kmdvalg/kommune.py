@@ -99,6 +99,36 @@ class data:
         d = self.get_dic_from_request(r=r, kommune=kommune)
         return d
 
+
+    def get_party_votes_from_request(self, kommune, r):
+        from bs4 import BeautifulSoup
+
+        parti_votes = {}
+
+        # Make soup
+        soup = BeautifulSoup(r.text, "html.parser")
+
+        # Get box data
+        kmd_parti_list = soup.find("div", {"class": "kmd-parti-list"})
+
+        # get columns
+        for parti in kmd_parti_list.findAll("div", {"class": "row table-like-row"})[1:]:
+            columns = parti.findAll("div", {"class", "table-like-cell"})
+            parti_dict = {
+                "Kandidatliste"   : (columns[0].text[0], columns[0].text[1:]),
+                "Stemmetal"       : int(columns[1].text.replace(".", "")),
+                "Tilvækst"        : int(columns[2].text.replace(".", "")),
+                #"Procent"         : float(columns[3].text.replace(",", ".")),
+                #"ProcentTilvækst" : float(columns[4].text.replace(",", ".")),
+            }
+            parti_votes[parti_dict["Kandidatliste"][1]] = parti_dict
+        print(parti_votes)
+        return parti_votes
+
+    
+    def get_personal_votes_from_request(self, kommune, r):
+        pass
+   
     def get_dic_from_request(self, r, kommune):
         from bs4 import BeautifulSoup
         # Make soup
@@ -125,11 +155,14 @@ class data:
             'Afstemningsomr' : Afstemningsomr,
             'I_alt_gyldige_stemmer' : I_alt_gyldige_stemmer,
             'I_alt_afgivne_stemmer' : I_alt_afgivne_stemmer,
-            'stemme_pct' : stemme_pct
+            'stemme_pct' : stemme_pct,
+            'party_votes' : self.get_party_votes_from_request(kommune, r)
         }
 
-        return d
+        #polling = get_polling_stations_from_request(kommune, r)
 
+        return d
+ 
     def get_kommuner_df(self, n=None, make=False, is_async=False):
         import pandas as pd
         import pickle
