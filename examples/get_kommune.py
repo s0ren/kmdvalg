@@ -25,11 +25,11 @@ for key in dic_cph:
 
 """# Get info all kommuner, synchronous mode"""
 #df_sync = data.get_kommuner_df(make=True, async=False)
-df_sync = data.get_kommuner_df(async=False)
+df_sync = data.get_kommuner_df(is_async=False)
 #print(df_sync)
 
 """# Get info all kommuner, asyncio"""
-df_async = data.get_kommuner_df(make=True, async=True)
+df_async = data.get_kommuner_df(make=True, is_async=True)
 #df_async = data.get_kommuner_df(async=True)
 #print(df_async)
 

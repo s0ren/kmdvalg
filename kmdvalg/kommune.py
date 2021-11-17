@@ -130,12 +130,12 @@ class data:
 
         return d
 
-    def get_kommuner_df(self, n=None, make=False, async=False):
+    def get_kommuner_df(self, n=None, make=False, is_async=False):
         import pandas as pd
         import pickle
 
         # If file exists
-        if not async:
+        if not is_async:
             df_file = "Valg2017_kommune.pkl"
         else:
             df_file = "Valg2017_kommune_async.pkl"
@@ -149,7 +149,7 @@ class data:
                 self.get_kommuner()
 
             # Loop over kommuner
-            if not async:
+            if not is_async:
                 if n:
                     kommuner = self.kommuner[:n]
                 else:
