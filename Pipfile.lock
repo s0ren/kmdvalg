@@ -1,0 +1,25 @@
+{
+    "_meta": {
+        "hash": {
+            "sha256": "c50fff9039c1e34c08ae84690f1dcac52f34436eceaf08857ada2e6b3f600a4b"
+        },
+        "pipfile-spec": 6,
+        "requires": {
+            "python_version": "3.9"
+        },
+        "sources": [
+            {
+                "name": "pypi",
+                "url": "https://pypi.org/simple",
+                "verify_ssl": true
+            }
+        ]
+    },
+    "default": {
+        "kmdvalg": {
+            "editable": true,
+            "path": "."
+        }
+    },
+    "develop": {}
+}
