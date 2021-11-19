@@ -22,6 +22,8 @@ Man kan, lidt generelt sige at alle data, og links, identifiseres ved den kontek
 Måske kan man en dag bruge Machine Learning til at "opdage" konteksten.
 
 Links
+* <https://kmdvalg.dk/Main/Home/KV> selvfølgelig :-)
+
 * <https://www.google.com/search?channel=fs&client=ubuntu&q=how+to+write+a+web+scraper>
   * <https://www.edureka.co/blog/web-scraping-with-python/>
   * <https://realpython.com/beautiful-soup-web-scraper-python/>
