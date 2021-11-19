@@ -20,3 +20,13 @@ Umiddelbart kan man måske bruge en velskrevet generisk `Grabber`, til mange job
 Man kan, lidt generelt sige at alle data, og links, identifiseres ved den kontekst de står i. Så hvis man kan definere konteksten, har man også data... 
 
 Måske kan man en dag bruge Machine Learning til at "opdage" konteksten.
+
+Links
+* <https://www.google.com/search?channel=fs&client=ubuntu&q=how+to+write+a+web+scraper>
+  * <https://www.edureka.co/blog/web-scraping-with-python/>
+  * <https://realpython.com/beautiful-soup-web-scraper-python/>
+  * <https://hackernoon.com/building-a-web-scraper-from-start-to-finish-bb6b95388184>
+  * <https://betterprogramming.pub/the-only-step-by-step-guide-youll-need-to-build-a-web-scraper-with-python-e79066bd895a>
+  * <https://webscraper.io/>
+  * <https://towardsdatascience.com/how-to-build-a-web-scraper-in-python-c75563ee60b7>
+  * <https://oxylabs.io/blog/python-web-scraping>
