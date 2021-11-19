@@ -145,11 +145,11 @@ class data:
         soup = BeautifulSoup(r.text, features="html.parser")
 
         # Get box data
-        kmd_parti_list = soup.find("div", {"id": "vote-areas"})
+        kmd_vote_areas = soup.find("div", {"id": "vote-areas"})
 
         # get columns
-        for parti in kmd_parti_list.findAll("div", {"class": "row table-like-row"})[1:]:
-            columns = parti.findAll("div", {"class", "table-like-cell"})
+        for area in kmd_vote_areas.findAll("div", {"class": "row table-like-row"})[1:]:
+            columns = area.findAll("div", {"class", "table-like-cell"})
             # print(columns[0].text)
             # print(columns[0])
             print(columns[0])
@@ -193,8 +193,8 @@ class data:
             'I_alt_gyldige_stemmer' : I_alt_gyldige_stemmer,
             'I_alt_afgivne_stemmer' : I_alt_afgivne_stemmer,
             'stemme_pct' : stemme_pct,
-            'party_votes' : self.get_party_votes_from_request(kommune, r)
-             'polling_stations' : self.get_polling_stations_from_request(kommune, r)
+            'party_votes' : self.get_party_votes_from_request(kommune, r),
+            'polling_stations' : self.get_polling_stations_from_request(kommune, r)
         }
 
         #polling_stations = get_polling_stations_from_request(kommune, r)
