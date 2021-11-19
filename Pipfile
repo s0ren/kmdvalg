@@ -5,6 +5,12 @@ name = "pypi"
 
 [packages]
 kmdvalg = {editable = true, path = "."}
+bokeh = "*"
+numpy = "*"
+pandas = "*"
+pyshp = "*"
+beautifulsoup4 = "*"
+requests = "*"
 
 [dev-packages]
 
